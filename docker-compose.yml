@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  app:
+    depends_on: 
+      - redis
+    image: asteen313/hyperglass:1.0.0-beta58
+    container_name: hyperglass_app
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./config/hyperglass.yml:/examples/hyperglass.yml
+      - ./config/devices.yml:/examples/devices.yml
+    networks:
+      hyperglass_network:
+        ipv4_address: '192.168.92.2'
+
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./storage/redis/data:/data
+    restart: always
+    networks:
+      hyperglass_network:
+        ipv4_address: '192.168.92.3'
+
+
+networks:
+  hyperglass_network:
+    ipam:
+      driver: default 
+      config:
+        - subnet: '192.168.92.0/24'
+
+volumes:
+  hyperglass.yml:
+  devices.yml:
+  data:
+
+
